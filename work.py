@@ -102,6 +102,7 @@ if __name__ == '__main__':
         url = 'http://mkskinlover.tumblr.com/'
         real_url = url+'page/'+str(page)
 
+
         # 请求url
         response = requests.get(real_url, proxies=proxies)
 
