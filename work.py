@@ -100,7 +100,7 @@ if __name__ == '__main__':
     # resource_list = [{'url':'开心'}, {'url':'母鸡'}]
     # write_to_db(db_path, save_path, resource_list)
 
-    beg_page = 1
+    beg_page = 5
     end_page = 100
     # 遍历整个blog所有的页面
     for page in range(beg_page, end_page):
@@ -109,7 +109,7 @@ if __name__ == '__main__':
         real_url = url + 'page/' + str(page)
 
         # 请求url
-        response = requests.get(real_url, proxies=proxies, timeout=5)
+        response = requests.get(real_url, proxies=proxies)
         soup = BeautifulSoup(response.text, "html.parser")
         # 得到资源列表
         resource_list = get_resouce_from_page(soup)
