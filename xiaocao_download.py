@@ -41,11 +41,12 @@ def filter_exist(driver, resource_list, db):
         # print(res_name)
         # print(res_name.encode('utf8').decode('gb18030'))
 
+
 def get_resouce_from_page(soup):
     # 找到response中所有的资源
     # dfpan_list = ['http://page2.dfpan.com/fs/3k2i3n1g7c6v339/', 'http://page2.dfpan.com/fs/bkeidncgcc4vdf9/']
     resource_list = []
-    elem_dfpan = soup.findAll("div", {'class': "copy"})
+    elem_dfpan = soup.findAll("div", {'class': "entry_body"})
     for elem in elem_dfpan:
         resource = {}
         # 获取标题和网址
@@ -54,31 +55,22 @@ def get_resouce_from_page(soup):
             e_text = a.get_text()
             a_href = a['href']
             # 有特定符号putpan
-            if a_href and e_text.find('点击进入下载') < 0 and \
-                    (a_href.find('putpan') >= 0 or a_href.find('tadown') >= 0):
-                # 获取标题(有可能和资源页面的不符，还需要真实访问一遍）
-                resource['name'] = e_text
+            if (a_href.find('putpan') >= 0 or a_href.find('tadown') >= 0):
                 # 获取网址
                 resource['url'] = a['href']
                 break
         # 获取可能的密码
-        p_list = elem.findAll('p')
-        for p in p_list:
-            e_text = p.get_text()
-            if e_text.find('密码') >= 0:
-                text_l = re.split(r"[:：]", e_text)
-                passwd_name = text_l[0]
-                passwd_value = ':'.join(text_l[1:])
-                resource[passwd_name] = passwd_value
+        e_text = elem.get_text()
+        if e_text.find('解压码') >= 0 and e_text.find('下载教程') >= 0:
+            e_text_1 = re.split(r"解压码", e_text)[1]
+            e_text_2 = re.split(r"下载教程", e_text_1)[0]
+            resource['密码'] = e_text_2.strip()
         # add resource
         if resource:
             resource_list.append(resource)
 
     return resource_list
 
-def load_db(db_path, resource_list):
-
-    pass
 
 def write_to_db(db_path, save_path, resource_list):
     with open(save_path, 'a', encoding='utf8') as save_file, open(db_path, 'a', encoding='utf8') as db_file:
@@ -90,31 +82,21 @@ def write_to_db(db_path, save_path, resource_list):
 
 if __name__ == '__main__':
     # 数据文件的地址
-    db_path = os.path.join('output', 'db.txt')
-    db = MyJsonDB(db_path)
-    # test
-    # resource_list = [{'url':'开心'}, {'url':'母鸡'}]
-    # write_to_db(db_path, save_path, resource_list)
+    db_path = os.path.join('output', 'db_xiaocao.txt')
+    db = MyJsonDB(db_path, new_db=True)
 
-    beg_page = 4
-    end_page = 100
+    beg_page = 1
+    end_page = 5
     # 遍历整个blog所有的页面
     for page in range(beg_page, end_page):
         # 填好url
-        url = 'http://mrskinlover.tumblr.com/'
-        real_url = url + 'page/' + str(page)
-
+        real_url = 'http://xcbz.blog.fc2blog.us/page-{}.html'.format(page)
         # 请求url
-        proxies = {
-            'http': 'http://127.0.0.1:54422',
-            'https': 'https://127.0.0.1:54422',
-        }
-        response = requests.get(real_url, proxies=proxies)
+        response = requests.get(real_url)
         soup = BeautifulSoup(response.text, "html.parser")
         # 得到资源列表
         resource_list = get_resouce_from_page(soup)
         # 初步过滤：名字已存在的res ,丢弃
-        resource_list = list(filter(lambda x: not db.is_duplicate('name', x), resource_list))
         print('page %d, resource_list len : %d' % (page, len(resource_list)))
 
         # 过滤掉已存在的文件
@@ -125,4 +107,4 @@ if __name__ == '__main__':
 
         # 保存需要的dfpan
         print('page %d, filterd resource_list len : %d' % (page, len(resource_list)))
-        write_to_db(db_path, save_path, resource_list)
+        db.write_to_db(db_path, resource_list, write_mode='a', verbose=True)

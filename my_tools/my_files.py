@@ -54,7 +54,6 @@ class MyFiles(object):
     def fin_files(self):
         return list(self._fin_files)
 
-    @property
     def fin_folder(self):
         return self._fin_folder
 
