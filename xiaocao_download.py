@@ -12,12 +12,18 @@ import json
 from crawler_myTools.selenium_tools.webdriver import MyWebDriver
 
 from my_tools.my_files import MyFiles
-from json_db.db_common import MyJsonDB
+from jsonDB_myTools.common import MyJsonDB
 
 
 def filter_exist(driver, resource_list, db):
     # 过滤掉已经下载好的文件的dfpan地址列表
     for idx, resource in enumerate(resource_list):
+        # 处理没有url的resource
+        if not resource.get('url') or not resource.get('name') :
+            print('遇到异常resource:', resource)
+            resource_list.pop(idx)
+            continue
+
         driver.get(resource['url'])
         # print(driver.title)
         res_name = driver.title
@@ -83,7 +89,7 @@ def write_to_db(db_path, save_path, resource_list):
 if __name__ == '__main__':
     # 数据文件的地址
     db_path = os.path.join('output', 'db_xiaocao.txt')
-    db = MyJsonDB(db_path, new_db=True)
+    db = MyJsonDB(db_path)
 
     beg_page = 1
     end_page = 5

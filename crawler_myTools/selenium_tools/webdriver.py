@@ -8,7 +8,7 @@ import os, time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from crawler_myTools.common.UserAgent import UA
+from crawler_myTools.common.UserAgent import get_random_UA
 
 
 class MyWebDriver(object):
@@ -70,7 +70,7 @@ class MyWebDriver(object):
             'profile.default_content_setting_values': {
                 'images': 2,  # 不加载图片
                 'javascript': 2,  # 不加载JS
-                "User-Agent": UA().get_random_ua()  # 随机UA
+                "User-Agent": get_random_UA()  # 随机UA
             }
         }
         chrome_options.add_experimental_option("prefs", prefs)
@@ -89,7 +89,7 @@ class MyWebDriver(object):
         # 开启配置项dcap
         dcap = dict(DesiredCapabilities.PHANTOMJS)
         # 随机选取UA
-        dcap["phantomjs.page.settings.userAgent"] = UA().get_random_ua()
+        dcap["phantomjs.page.settings.userAgent"] = get_random_UA()
         # 设置不载入图片
         dcap["phantomjs.page.settings.loadImages"] = False
 

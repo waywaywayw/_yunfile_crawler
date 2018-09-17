@@ -6,7 +6,7 @@
 
 import os
 from my_tools.my_files import MyFiles
-from json_db.db_common import MyJsonDB
+from jsonDB_myTools.common import MyJsonDB
 
 
 if __name__ == '__main__':
@@ -21,10 +21,16 @@ if __name__ == '__main__':
     save_file = open(save_path, 'w')
 
     # 挨个判断，如果下载文件不存在，那么写入need_dfpan.txt
-    downed =
+    # downed =
     resource_list = list(filter(lambda x: x['name'] not in exist_files, resource_list))
     for idx, resource in enumerate(resource_list):
-        save_file.write(resource['url']+'\n')
+        if resource.get('yunfile_url'):
+            save_file.write(resource['yunfile_url']+'\n')
+            print('找到还未下载的资源：', resource)
+        elif resource.get('other_url'):
+            print('找到还未下载的非yunfile资源：', resource)
+        else :
+            print('异常的资源..')
 
     print('写入', save_path, '成功')
     save_file.close()
