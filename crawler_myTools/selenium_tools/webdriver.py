@@ -70,8 +70,10 @@ class MyWebDriver(object):
             'profile.default_content_setting_values': {
                 'images': 2,  # 不加载图片
                 'javascript': 2,  # 不加载JS
-                "User-Agent": get_random_UA()  # 随机UA
-            }
+                "User-Agent": get_random_UA(),  # 随机UA
+            },
+            'profile.default_content_settings.popups': 0,  # 设置为 0 禁止弹出窗口
+            'download.default_directory': 'G:\\'    # 设置下载文件的保存路径
         }
         chrome_options.add_experimental_option("prefs", prefs)
         # 无头模式
@@ -81,21 +83,6 @@ class MyWebDriver(object):
         # 创建浏览器
         driver = webdriver.Chrome(chrome_options=chrome_options,
                                   executable_path=self._executable_path)
-        return driver
-
-    def webdriver_PhantomJS(self):
-        # 引入配置对象DesiredCapabilities
-        from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-        # 开启配置项dcap
-        dcap = dict(DesiredCapabilities.PHANTOMJS)
-        # 随机选取UA
-        dcap["phantomjs.page.settings.userAgent"] = get_random_UA()
-        # 设置不载入图片
-        dcap["phantomjs.page.settings.loadImages"] = False
-
-        # 创建浏览器
-        driver = webdriver.PhantomJS(desired_capabilities=dcap,
-                                     executable_path=self._executable_path)
         return driver
 
     def webriver_Firefox(self):
@@ -112,6 +99,21 @@ class MyWebDriver(object):
 
         driver = webdriver.Firefox(firefox_profile=profile,
                                    executable_path=self._executable_path)
+        return driver
+
+    def webdriver_PhantomJS(self):
+        # 引入配置对象DesiredCapabilities
+        from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+        # 开启配置项dcap
+        dcap = dict(DesiredCapabilities.PHANTOMJS)
+        # 随机选取UA
+        dcap["phantomjs.page.settings.userAgent"] = get_random_UA()
+        # 设置不载入图片
+        dcap["phantomjs.page.settings.loadImages"] = False
+
+        # 创建浏览器
+        driver = webdriver.PhantomJS(desired_capabilities=dcap,
+                                     executable_path=self._executable_path)
         return driver
 
     def connect_test_0(self):
