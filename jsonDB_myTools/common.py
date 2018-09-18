@@ -32,14 +32,14 @@ class MyJsonDB(object):
         :param key_name: 判重的关键key的name
         :return:
         """
-        ret = False
         if not res_db:
             res_db = self._resource_list
 
         # resource里没有key_name属性的情况
         if not resource.get(key_name) :
-            return ret
+            return False
 
+        ret = False
         for r in res_db:
             # print(r)
             # print(r[key_name])
@@ -81,11 +81,13 @@ class MyJsonDB(object):
                     print(res_json)
         return True
 
-    def resource_list(self):
+    # resource_list的get, set方法
+    def get_resource_list(self):
         return self._resource_list
 
     def set_resource_list(self, resource_list):
         self._resource_list = resource_list
 
     def extend_resource_list(self, resource_list):
+        """扩展resource_list, 参数为resource of list"""
         self._resource_list.extend(resource_list)

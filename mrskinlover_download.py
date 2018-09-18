@@ -13,7 +13,7 @@ from crawler_myTools.selenium_tools.webdriver import MyWebDriver
 
 from my_tools.my_files import MyFiles
 from jsonDB_myTools.common import MyJsonDB
-from crawler_myTools.requests_tools.common_config import MyConfig
+from crawler_myTools.requests_tools.common_config import MyRequestsConfig
 
 
 def filter_exist(driver, resource_list, db):
@@ -66,7 +66,7 @@ def filter_exist(driver, resource_list, db):
 
 def get_resouce_from_resouce_page(url):
     # 请求url
-    response = requests.get(real_url, proxies=MyConfig.proxies, headers=MyConfig.headers)
+    response = requests.get(real_url, proxies=MyRequestsConfig.proxies, headers=MyRequestsConfig.headers)
     soup = BeautifulSoup(response.text, "html.parser")
     # 找到response中所有的资源
     # dfpan_list = ['http://page2.dfpan.com/fs/3k2i3n1g7c6v339/', 'http://page2.dfpan.com/fs/bkeidncgcc4vdf9/']
@@ -126,7 +126,7 @@ if __name__ == '__main__':
     db_path = os.path.join('output', 'db_mrskinlover.txt')
     db = MyJsonDB(db_path)
     print('载入数据库..')
-    print('已有{}个资源'.format(len(db.resource_list())))
+    print('已有{}个资源'.format(len(db.get_resource_list())))
     # test
     # resource_list = [{'url':'开心'}, {'url':'母鸡'}]
     # write_to_db(db_path, save_path, resource_list)
@@ -162,4 +162,4 @@ if __name__ == '__main__':
         db.extend_resource_list(resource_list)
         db.write_to_db(write_mode='w', verbose=False)
 
-    print('目前数据库的资源数：{}'.format(len(db.resource_list())))
+    print('目前数据库的资源数：{}'.format(len(db.get_resource_list())))

@@ -43,18 +43,16 @@ class MyFiles(object):
         for file in self._fin_files:
             yield os.path.join(self._fin_folder, file)
 
-    def base_file_name(self):
-        """
-        返回不带路径的文件名
-        :return:
-        """
+    def files_name_generator(self):
+        """返回不带路径的完整文件名 的generator"""
         for file in self._fin_files:
             yield file
 
-    def fin_files(self):
+    def files_name(self):
+        """返回不带路径的完整文件名"""
         return list(self._fin_files)
 
-    def fin_folder(self):
+    def folder_name(self):
         return self._fin_folder
 
 
