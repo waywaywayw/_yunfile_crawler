@@ -2,7 +2,7 @@
 import sys
 sys.path.append('..')
 
-from crawler_myTools.common.UserAgent import get_random_UA
+from atools_crawler.common.UserAgent import get_random_UA
 
 
 class MyRequestsConfig(object):
@@ -12,5 +12,6 @@ class MyRequestsConfig(object):
     }
     headers = {'Connection': 'Keep-Alive'
                # ,'host': 'zhannei.baidu.com'
+               # ,'ref??': ''
                 , 'User-Agent': get_random_UA()
     }
