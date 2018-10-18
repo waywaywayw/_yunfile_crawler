@@ -2,7 +2,6 @@
 from bs4 import BeautifulSoup
 import requests
 import time
-from PIL import Image
 import datetime
 import re
 import os
@@ -45,10 +44,10 @@ if __name__ == '__main__':
             yunfile_url_list.append(line.strip())
     # 遍历下载需要的资源列表
     for yunfile_url in yunfile_url_list:
-        def entry_url(yunfile_url):
+        def entry_url(driver, yunfile_url):
             while True:
                 try:
-                    driver.get(login_url)
+                    driver.get(yunfile_url)
                     # 如果出现验证码页面，等待5分钟
                     vcode = driver.find_element_by_css_selector("#cvimgvip")
                     print('出现验证码，休息5分钟..')
@@ -57,7 +56,7 @@ if __name__ == '__main__':
                     print('未出现验证码')
                     break
 
-        entry_url(yunfile_url)
+        entry_url(driver, yunfile_url)
 
         # 3. 点击下载
         download_url_elem_list = [
@@ -66,13 +65,22 @@ if __name__ == '__main__':
             '#skyblue_content > div.downpage > div > div:nth-child(3) > table > tbody > tr:nth-child(1) > td > table > tbody > tr > td > a']
         elem_idx = random.randint(0, len(download_url_elem_list)-1)
         nowTime = time.strftime('%Y%m%d.%H.%M.%S')
-        t = driver.get_screenshot_as_file('%s.jpg' % nowTime)
+        t = driver.get_screenshot_as_file('%s.png' % nowTime)
         print('截图结果%s' % t)
         # 点击某种高速下载按钮
-        button = driver.find_element_by_css_selector(download_url_elem_list[elem_idx])
+        button = driver.find_element_by_css_selector(download_url_elem_list[0])
         driver.execute_script("$(arguments[0]).click()", button)
         print('已点击下载按钮')
-        time.sleep(3)
+        # button = driver.find_element_by_css_selector(download_url_elem_list[1])
+        # driver.execute_script("$(arguments[0]).click()", button)
+        # print('再次已点击下载按钮')
+        # time.sleep(3)
+        # debug
+        break
 
+    while True:
+        print('等待下载完毕.. 需要手动结束程序..')
+        time.sleep(60)
+        pass
     pass
 
