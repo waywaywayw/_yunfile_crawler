@@ -64,7 +64,7 @@ class MyFiles(object):
 
 def readlines_from_file(input_path, encoding='utf8'):
     ret_list = []
-    with open('while_list.txt', 'r', encoding=encoding) as fin:
+    with open(input_path, 'r', encoding=encoding) as fin:
         for line in fin:
             ret_list.append(line.strip())
     return ret_list

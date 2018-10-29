@@ -4,8 +4,10 @@
 @date: 2018-09-06
 """
 
-import os, re
+import os
 import json
+import pandas as pd
+from pandas.io.json import json_normalize
 
 
 class MyjsonDB(object):
@@ -45,8 +47,11 @@ class MyjsonDB(object):
         # 写入数据库
         with open(self._db_path, write_mode, encoding=encoding) as fout:
             # 有中文需要：ensure_ascii=False
-            json.dump(self._resource_dict, fout, ensure_ascii=False)
+            json.dump(self._resource_dict, fout, ensure_ascii=False, sort_keys=True)
         return True
+
+    def set_duplicate_key(self, duplicate_key):
+        self._duplicate_key = duplicate_key
 
     def make_duplicate_set(self):
         """重新制作 duplicate_set"""
@@ -64,7 +69,7 @@ class MyjsonDB(object):
 
     def merge(self, res_list, make_dup=True):
         if not self.resource_list: # 为空时直接覆盖
-            self.resource_list = res_list
+            self._resource_dict['jsondb'] = res_list
             return
 
         # 先更新 duplicate_set
@@ -74,6 +79,10 @@ class MyjsonDB(object):
         for res in res_list:
             if not self.is_duplicate(res):   # 不重复，才添加
                 self.resource_list.append(res)
+
+    def to_excel(self, output_path):
+        df = json_normalize(self.resource_list)
+        df.to_excel(output_path, index=False)
 
     @property
     def resource_dict(self):
